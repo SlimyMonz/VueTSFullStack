@@ -1,12 +1,12 @@
 import { z } from "zod";
-import { db } from "../Repository/db";
+import { UserService as service } from "../Services/UserService";
 import { publicProcedure, router } from "../trpc";
-import { userName } from "../Models/zodTypes";
+import { userNameSchema } from "../Models/zodTypes";
 
 
 const userList = publicProcedure
     .query(async () => {
-        const users = await db.user.findMany();
+        const users = await service.findManyUsers();
         return users;
 });
 
@@ -14,17 +14,16 @@ const userById = publicProcedure
     .input(z.string())
     .query(async (opts) => {
         const { input } = opts;
-        const user = await db.user.findById(input);
+        const user = await service.findUserById(input);
         return user;
 });
 
 const userCreate = publicProcedure
 // example of where zodTypes models might be used
-    .input(userName)
+    .input(userNameSchema)
 // "opts" can be replaced by ({ input }) if desired
-    .mutation(async (opts) => {
-        const { input } = opts;
-        const user = await db.user.create(input);
+    .mutation(async ({input}) => {
+        const user = await service.createUser(input);
         return user;
   });
 

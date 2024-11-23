@@ -1,5 +1,3 @@
-
-
 <template>
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
@@ -21,19 +19,28 @@
 
 import { ref } from 'vue';
 import trpc from '../trpcClient';
+import { userNameType } from '../../../proj.server/src/Models/zodTypes';
 
 // Types are inferred from Zod; Hover constant name to view.
 let user = ref();
 let name = ref();
 
-async function fetchUser() {
-  const result = await trpc.userById.query('1');
-  user.value = result?.name;
+async function fetchUser(id: string) {
+  try {
+    // more typing from zod
+    const result: userNameType = await trpc.userById.query(id);
+    name.value = result?.name;
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 async function updateUserName() {
-  await trpc.userCreate.mutate({name: name.value})
-  fetchUser();
+  await trpc.userCreate.mutate({
+    name: name.value,
+    id: '1'
+  })
+  fetchUser('1');
 }
 
 defineProps<{
@@ -59,6 +66,7 @@ h3 {
 }
 
 @media (min-width: 1024px) {
+
   .greetings h1,
   .greetings h3 {
     text-align: left;
