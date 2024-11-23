@@ -1,9 +1,7 @@
 import { userNameType } from "../Models/zodTypes";
 
-type User = { id: string; name: string };
-
 // Imaginary database
-const users: User[] = [];
+const users: userNameType[] = [];
 
 async function findMany() {
   return users;
