@@ -1,37 +1,10 @@
 import { createHTTPServer } from "@trpc/server/adapters/standalone";
-import { z } from "zod";
-import { db } from "./db";
-import { publicProcedure, router } from "./trpc";
+import { userRouter} from "./API/routes";
 
-
-// these would normally go into an API folder
-const appRouter = router({
-  userList: publicProcedure
-    .query(async () => {
-      const users = await db.user.findMany();
-      return users;
-    }),
-  userById: publicProcedure
-    .input(z.string())
-    .query(async (opts) => {
-      const { input } = opts;
-      const user = await db.user.findById(input);
-      return user;
-    }),
-  userCreate: publicProcedure
-    .input(z.object({ name: z.string() }))
-    .mutation(async (opts) => {
-      const { input } = opts;
-      const user = await db.user.create(input);
-      return user;
-    }),
-});
-
-
-export type AppRouter = typeof appRouter;
+export type AppRouter = typeof userRouter;
 
 const server = createHTTPServer({
-  router: appRouter,
+  router: userRouter,
 });
 
 server.listen(3000);
