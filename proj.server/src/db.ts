@@ -1,5 +1,5 @@
 type User = { id: string; name: string };
- 
+
 // Imaginary database
 const users: User[] = [];
 export const db = {

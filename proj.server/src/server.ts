@@ -2,7 +2,9 @@ import { createHTTPServer } from "@trpc/server/adapters/standalone";
 import { z } from "zod";
 import { db } from "./db";
 import { publicProcedure, router } from "./trpc";
- 
+
+
+// these would normally go into an API folder
 const appRouter = router({
   userList: publicProcedure
     .query(async () => {
@@ -24,11 +26,12 @@ const appRouter = router({
       return user;
     }),
 });
- 
+
+
 export type AppRouter = typeof appRouter;
- 
+
 const server = createHTTPServer({
   router: appRouter,
 });
- 
+
 server.listen(3000);
