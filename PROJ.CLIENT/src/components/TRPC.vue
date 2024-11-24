@@ -33,7 +33,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import trpc from '../trpcClient';
-import { userNameType } from '../../../proj.server/src/Models/zodTypes';
+import { UserType } from '../../../proj.server/src/Models/zodTypes';
 
 // Reactive states for creating a user
 let id = ref("None");
@@ -41,19 +41,20 @@ let name = ref("None");
 
 // Reactive states for fetching a user
 let getUserId = ref("");
-let fetchedUser = ref<userNameType | null>(null);
+let fetchedUser = ref<UserType | null>(null);
 
 // Function to create a user
 async function createUser() {
   try {
-    await trpc.userCreate.mutate({
+    // we do not need to define the Type here because it is inferred by trpc/zod
+    const result = await trpc.userCreate.mutate({
       id: id.value,
       name: name.value
     });
-    // Optionally reset the input fields after creating the user
     id.value = '';
     name.value = '';
-    console.log("User created successfully!");
+    // since we created the data, we do not need to check if it exists
+    console.log(`User ${result.name} created successfully!`);
   } catch (e) {
     console.log("Error creating user:", e);
   }
@@ -63,9 +64,14 @@ async function createUser() {
 async function getUserClick() {
   try {
     if (getUserId.value) {
-      const result: userNameType = await trpc.userById.query(getUserId.value);
-      fetchedUser.value = result;
-      console.log(`Fetched: ${fetchedUser.value}`)
+      const result = await trpc.userById.query(getUserId.value);
+      // since we did not create the data, we need to make sure it exists
+      if (result) {
+        fetchedUser.value = result;
+        console.log(`Fetched: ${result.name}`)
+      } else {
+        console.log("No user found.");
+      }
     } else {
       console.log("Please enter an ID.");
     }

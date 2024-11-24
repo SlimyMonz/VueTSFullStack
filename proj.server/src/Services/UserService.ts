@@ -1,25 +1,26 @@
 import { UserRepository } from '../Repository/UserRepository';
-import { userNameSchema, userNameType } from '../Models/zodTypes';
+import { UserData, UserType } from '../Models/zodTypes';
 
 
-async function createUser(user: userNameType) {
+async function createUser(user: UserType) {
 
-  const parsed = userNameSchema.safeParse(user);
+  const parsed = UserData.safeParse(user);
   
   if (!parsed.success) {
     throw new Error(`Invalid data: ${parsed.error.errors.map((e) => e.message).join(', ')}`);
   }
-  return UserRepository.user.create(user);
+  return await UserRepository.user.create(user);
 };
 
 async function getManyUsers() {
-  return UserRepository.user.findMany()
+  return await UserRepository.user.findMany()
 }
 
 async function getUserById(id: string){
-  return UserRepository.user.getById(id);
+  return await UserRepository.user.getById(id);
 }
 
+// exports to routes.ts to be used as endpoint functions
 export const UserService = {
   createUser,
   getManyUsers,

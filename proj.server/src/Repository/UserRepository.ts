@@ -1,17 +1,17 @@
-import { userNameType } from "../Models/zodTypes";
+import { UserType } from "../Models/zodTypes";
 
 // Imaginary database
-const users: userNameType[] = [];
+const users: UserType[] = [];
 
 async function findMany() {
   return users;
 }
 
 async function getById(id: string) {
-  users.find((user) => user.id === id);
+  return users.find((user) => user.id === id);
 }
 
-async function create(user: userNameType){
+async function create(user: UserType){
   users.push(user);
   return user;
 };
