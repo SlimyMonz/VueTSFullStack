@@ -7,12 +7,11 @@ async function findMany() {
   return users;
 }
 
-async function findById(id: string) {
+async function getById(id: string) {
   users.find((user) => user.id === id);
 }
 
 async function create(user: userNameType){
-  user.id = String(users.length + 1);
   users.push(user);
   return user;
 };
@@ -20,7 +19,7 @@ async function create(user: userNameType){
 export const UserRepository = {
   user: {
     findMany,
-    findById,
+    getById,
     create,
   },
 };

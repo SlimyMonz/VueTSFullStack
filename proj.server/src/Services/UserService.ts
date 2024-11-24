@@ -12,16 +12,16 @@ async function createUser(user: userNameType) {
   return UserRepository.user.create(user);
 };
 
-async function findManyUsers() {
+async function getManyUsers() {
   return UserRepository.user.findMany()
 }
 
-async function findUserById(id: string){
-  return UserRepository.user.findById(id);
+async function getUserById(id: string){
+  return UserRepository.user.getById(id);
 }
 
 export const UserService = {
   createUser,
-  findManyUsers,
-  findUserById
+  getManyUsers,
+  getUserById
 };

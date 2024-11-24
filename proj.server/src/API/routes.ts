@@ -6,22 +6,20 @@ import { userNameSchema } from "../Models/zodTypes";
 
 const userList = publicProcedure
     .query(async () => {
-        const users = await service.findManyUsers();
+        const users = await service.getManyUsers();
         return users;
 });
 
 const userById = publicProcedure
     .input(z.string())
-    .query(async (opts) => {
-        const { input } = opts;
-        const user = await service.findUserById(input);
+    .query(async ({input}) => {
+        const user = await service.getUserById(input);
         return user;
 });
 
 const userCreate = publicProcedure
-// example of where zodTypes models might be used
+// example of where zodTypes models can be used
     .input(userNameSchema)
-// "opts" can be replaced by ({ input }) if desired
     .mutation(async ({input}) => {
         const user = await service.createUser(input);
         return user;

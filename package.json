@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "concurrently \" cd proj.server && npm start \" \" cd PROJ.CLIENT && npm build \"",
-    "dev": "concurrently \" cd proj.server && npm run dev \" \" cd PROJ.CLIENT && npm run dev \"",
+    "dev": "concurrently \" cd proj.server && npm start \" \" cd PROJ.CLIENT && npm run dev \"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
