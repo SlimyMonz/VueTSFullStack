@@ -47,7 +47,7 @@ let fetchedUser = ref<UserType | null>(null);
 async function createUser() {
   try {
     // we do not need to define the Type here because it is inferred by trpc/zod
-    const result = await trpc.userCreate.mutate({
+    const result = await trpc.user.mutate({
       id: id.value,
       name: name.value
     });
