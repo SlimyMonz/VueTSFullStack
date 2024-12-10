@@ -18,7 +18,7 @@ const userById = publicProcedure
         return user;
 });
 
-const userCreate = publicProcedure
+const user = publicProcedure
 // example of where zodTypes models can be used
     .input(UserData)
     .mutation(async ({input}) => {
@@ -30,5 +30,5 @@ const userCreate = publicProcedure
 export const userRouter = router({
   userList: userList,
   userById: userById,
-  userCreate: userCreate,
+  user: user,
 });
