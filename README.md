@@ -31,5 +31,8 @@ To get started, follow these steps:
 ## Technologies Used
 
 - **TypeScript**: Strongly typed JavaScript for better tooling and safer code.
-- **Vue.js**: Progressive JavaScript framework for building user interfaces.
+- **Vue.js**: Front-end framework for building user interfaces.
 - **tRPC**: A framework for building end-to-end type-safe APIs.
+- **Zod**: Schema validation for user input and types.
+- **JWT**: Secure, stateless authentication using JSON Web Tokens.
+- **CORS**: Cross-Origin Resource Sharing middleware to enable cross-origin requests.
