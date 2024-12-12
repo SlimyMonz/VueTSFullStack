@@ -4,6 +4,15 @@ import { decodeAndVerifyJwtToken } from './jwt'
 export async function createContext({
     req, res
 }: trpcNext.CreateNextContextOptions) {
+
+      // Get the route being requested
+  const route = req.url;  // e.g., /user/someProcedure, /auth/login, etc.
+
+  // If the route starts with '/auth', we don't need to check for a valid token
+  if (route.startsWith('/auth')) {
+    return null;  // No user context needed for auth routes (login)
+  }
+
     // Currently, the context only parses the JWT and returns it in an object.
     async function parseHeader() {
         if (req.headers.authorization) {

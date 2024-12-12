@@ -32,7 +32,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { trpcUserRouter } from '../trpcClient';
+import trpc from '../trpcClient';
 import { UserType } from '../../../proj.server/src/Models/zodTypes';
 
 // Reactive states for creating a user
@@ -47,7 +47,7 @@ let fetchedUser = ref<UserType | null>(null);
 async function createUser() {
   try {
     // we do not need to define the Type here because it is inferred by trpc/zod
-    const result = await trpcUserRouter.user.mutate({
+    const result = await trpc.user.user.mutate({
       id: id.value,
       name: name.value
     });
@@ -64,7 +64,7 @@ async function createUser() {
 async function getUserClick() {
   try {
     if (getUserId.value) {
-      const result = await trpcUserRouter.userById.query(getUserId.value);
+      const result = await trpc.user.userById.query(getUserId.value);
       // since we did not create the data, we need to make sure it exists
       if (result) {
         fetchedUser.value = result;

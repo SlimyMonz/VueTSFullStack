@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import router from '../router';
-import { trpcAuthRouter } from '../trpcClient';
+import trpc from '../trpcClient';
 
 // State to bind the input text
 const inputText = ref('')
@@ -20,7 +20,7 @@ const handleLogin = async () => {
     if (inputText.value) {
         try {
             // Get the JWT by passing the input text to getJwt
-            const jwt = await trpcAuthRouter.getJwt.query({ username: inputText.value })
+            const jwt = await trpc.auth.getJwt.query({ username: inputText.value })
             // Store the JWT in sessionStorage
             sessionStorage.setItem('token', jwt)
             // Navigate to a different page after successful login
