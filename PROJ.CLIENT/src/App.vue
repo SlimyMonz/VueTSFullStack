@@ -1,5 +1,3 @@
-
-
 <template>
   <header>
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
@@ -19,11 +17,40 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 
+// Use Vue Router to navigate programmatically
+const router = useRouter()
 
+// Check if the token exists and if it's valid
+const getToken = () => sessionStorage.getItem("token") ?? "";
+
+// Check if the token is valid or expired 
+const isTokenExpired = (token: string): boolean => {
+  if (!token) return true;
+  
+  try {
+    // Assuming JWT token with expiry (`exp`) field
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const currentTime = Math.floor(Date.now() / 1000);
+    return payload.exp < currentTime;  // Expiry check
+  } catch (error) {
+    return true; // Invalid token
+  }
+};
+
+// Redirect to login if no token or token is expired
+onMounted(() => {
+  const token = getToken();
+  
+  if (!token || isTokenExpired(token)) {
+    router.push('/login');
+  }
+});
 </script>
+
 
 <style scoped>
 header {
