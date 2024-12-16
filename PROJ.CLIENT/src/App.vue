@@ -24,36 +24,49 @@ import HelloWorld from './components/HelloWorld.vue'
 // Use Vue Router to navigate programmatically
 const router = useRouter()
 
-// Check if the token exists and if it's valid in cookies
-const getToken = (): string => {
+// Get the value of a cookie by name
+const getCookie = (name: string): string | undefined => {
   const cookies = document.cookie.split('; ')
-  const tokenCookie = cookies.find(cookie => cookie.startsWith('token='))
-  return tokenCookie ? tokenCookie.split('=')[1] : ''
+  const cookie = cookies.find(cookie => cookie.startsWith(`${name}=`))
+  return cookie ? cookie.split('=')[1] : undefined
 }
 
-// Check if the token is valid or expired 
-const isTokenExpired = (token: string): boolean => {
-  if (!token) return true;
+// Get the expiration date of a cookie (if present)
+const getCookieExpiration = (name: string): Date | null => {
+  const cookies = document.cookie.split('; ')
+  const cookie = cookies.find(cookie => cookie.startsWith(`${name}=`))
   
-  try {
-    // Assuming JWT token with expiry (`exp`) field
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    const currentTime = Math.floor(Date.now() / 1000);
-    return payload.exp < currentTime;  // Expiry check
-  } catch (error) {
-    return true; // Invalid token
-  }
-};
+  if (!cookie) return null;
 
-// Redirect to login if no token or token is expired
-onMounted(() => {
-  const token = getToken();
+  const cookieParts = cookie.split('; ');
+  const expirationPart = cookieParts.find(part => part.startsWith('expires='));
   
-  if (!token || isTokenExpired(token)) {
+  if (expirationPart) {
+    const expirationDate = expirationPart.split('=')[1];
+    return new Date(expirationDate);
+  }
+
+  return null;
+}
+
+// Check if a cookie is expired based on its expiration date
+const isCookieExpired = (name: string): boolean => {
+  const expirationDate = getCookieExpiration(name);
+  if (!expirationDate) return false; // No expiration date means the cookie does not expire
+
+  return expirationDate < new Date(); // If the expiration date has passed
+}
+
+// Redirect to login if the cookie doesn't exist or is expired
+onMounted(() => {
+  const token = getCookie('token');
+  
+  if (!token || isCookieExpired('token')) {
     router.push('/login');
   }
 });
 </script>
+
 
 
 
