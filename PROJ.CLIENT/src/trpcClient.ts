@@ -9,7 +9,7 @@ export const getToken = () => sessionStorage.getItem("token") ?? "";
 const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: 'http://localhost:3000', // No need for '/user' or '/auth'
+      url: 'http://localhost:3000/trpc', 
       headers() {
         return {
           Authorization: getToken(),

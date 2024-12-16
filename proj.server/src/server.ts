@@ -1,12 +1,17 @@
-import { createHTTPServer } from "@trpc/server/adapters/standalone";
-import { initTRPC } from "@trpc/server";
-import { userRouter} from "./API/routes";
-import { authRouter } from "./Auth/route";
-import { createContext } from "./Auth/context";
+import express from "express";
 import cors from "cors";
 
+import { initTRPC } from "@trpc/server";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import cookieParser from 'cookie-parser';
+
+import { userRouter } from "./API/routes";
+import { authRouter } from "./Auth/route";
+import { createContext } from "./Auth/context";
+
+
 // Load environment variables from .env file earliest
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 const port = process.env.SERVER_PORT || 3000;
 
@@ -18,15 +23,24 @@ const appRouter = t.router({
   auth: authRouter,
 });
 
-const server = createHTTPServer({
-  // context allows for reading ctx
-  createContext,
-  middleware: cors({credentials: true, origin: true}),
-  router: appRouter,
-  
-});
+// Create Express app
+const app = express();
 
-server.listen(port, () => {
+// Middlewares
+app.use(cors({ credentials: true, origin: true }));
+app.use(cookieParser());
+
+// Set up tRPC router with Express
+app.use(
+  "/trpc",
+  createExpressMiddleware({
+    router: appRouter,
+    createContext,
+  })
+);
+
+// Start server
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 

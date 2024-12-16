@@ -20,13 +20,12 @@ const handleLogin = async () => {
     if (inputText.value) {
         try {
             // Get the JWT by passing the input text to getJwt
-            const jwt = await trpc.auth.getJwt.query({ username: inputText.value })
-            // Store the JWT in sessionStorage
-            sessionStorage.setItem('token', jwt)
+            const result = await trpc.auth.login.query({ username: inputText.value })
+            console.log(result);
             // Navigate to a different page after successful login
             router.push('/')
         } catch (error) {
-            console.error('Error while getting JWT:', error)
+            console.error('Error while logging in:', error)
         }
     } else {
         alert('Please enter a valid string.')

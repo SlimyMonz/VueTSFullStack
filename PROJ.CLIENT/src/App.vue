@@ -24,8 +24,12 @@ import HelloWorld from './components/HelloWorld.vue'
 // Use Vue Router to navigate programmatically
 const router = useRouter()
 
-// Check if the token exists and if it's valid
-const getToken = () => sessionStorage.getItem("token") ?? "";
+// Check if the token exists and if it's valid in cookies
+const getToken = (): string => {
+  const cookies = document.cookie.split('; ')
+  const tokenCookie = cookies.find(cookie => cookie.startsWith('token='))
+  return tokenCookie ? tokenCookie.split('=')[1] : ''
+}
 
 // Check if the token is valid or expired 
 const isTokenExpired = (token: string): boolean => {
@@ -50,6 +54,7 @@ onMounted(() => {
   }
 });
 </script>
+
 
 
 <style scoped>

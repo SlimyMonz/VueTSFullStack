@@ -1,32 +1,30 @@
-import * as trpcNext from '@trpc/server/adapters/next'
-import { decodeAndVerifyJwtToken } from './jwt'
+import { decodeAndVerifyJwtToken } from './jwt';
+import * as trpcExpress from '@trpc/server/adapters/express';
 
-export async function createContext({
-    req, res
-}: trpcNext.CreateNextContextOptions) {
+// Function to create the context
+export async function createContext({ req, res }: trpcExpress.CreateExpressContextOptions) {
 
-      // Get the route being requested
-  const route = req.url;  // e.g., /user/someProcedure, /auth/login, etc.
+  // Function to parse cookies and extract the JWT token
+  async function parseCookie() {
+    const cookies = req.cookies;  // Directly access cookies from req.cookies (thanks to cookie-parser)
+    const jwt = cookies.token;  // Get the JWT token from the cookie
 
-  // If the route starts with '/auth', we don't need to check for a valid token
-  if (route.startsWith('/auth')) {
-    return null;  // No user context needed for auth routes (login)
+    if (!!jwt) {
+      try {
+        // Decode and verify the JWT token
+        const decodedJwt = await decodeAndVerifyJwtToken(jwt);
+        return decodedJwt; 
+      } catch (error) {
+        console.error('JWT verification failed', error);
+        return null;
+      }
+    }
+    return {req, res, jwt: null};  // Return null JWT if no JWT token is found, still want request/result for public procedure (auth). 
   }
 
-    // Currently, the context only parses the JWT and returns it in an object.
-    async function parseHeader() {
-        if (req.headers.authorization) {
-            const jwt = await decodeAndVerifyJwtToken(
-                req.headers.authorization.split(' ')[1]
-            );
-            return jwt;
-        } else {
-            return null; // can implement error here if desired; may be redundant since errors will be sent by the decode function anyway.
-        }
-    }
+  const jwt = await parseCookie();  // Parse and verify the JWT token from cookies
+  return { req, res, jwt }; 
+}
 
-    const jwt = await parseHeader();
-    return {jwt : jwt};
-};
 
 export type Context = Awaited<ReturnType<typeof createContext>>;
