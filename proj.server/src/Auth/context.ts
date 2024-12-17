@@ -19,11 +19,12 @@ export async function createContext({ req, res }: trpcExpress.CreateExpressConte
         return null;
       }
     }
-    return {req, res, jwt: null};  // Return null JWT if no JWT token is found, still want request/result for public procedure (auth). 
+    return null;  // Return null JWT if no JWT token is found, still want request/result for public procedure (auth). 
   }
 
   const jwt = await parseCookie();  // Parse and verify the JWT token from cookies
-  return { req, res, jwt }; 
+  console.log(jwt);
+  return { req, res, token: jwt }; 
 }
 
 

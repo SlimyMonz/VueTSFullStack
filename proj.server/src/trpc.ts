@@ -10,7 +10,7 @@ export const privateProcedure = t.procedure.use(async function isAuthed(opts) {
   const { ctx } = opts;
 
   // If ctx.jwt is valid/truthy, proceed to the next step
-  if (!!ctx.jwt) {
+  if (!!ctx.token) {
     return opts.next({
       ctx: {
         req: ctx.req,
