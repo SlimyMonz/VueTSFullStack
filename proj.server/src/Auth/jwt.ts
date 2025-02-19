@@ -1,11 +1,15 @@
 import { z } from 'zod';
 import jwt from 'jsonwebtoken';
 
+// Startup dotenv first.
+import dotenv from "dotenv";
+dotenv.config();
+
 export async function decodeAndVerifyJwtToken(token: string): Promise<ZodJwtType> {
     try {
       // Verify and decode the JWT token using the secret key. (Secret should be loaded by DOTENV)
-      const decodedJwt = jwt.verify(token, 'SECRET_KEY'); 
-  
+      const decodedJwt = jwt.verify(token, process.env.NODE_ENV || 'SECRET'); 
+
       // Check if the decoded JWT matches ZodJwtType
       if (isZodJwtType(decodedJwt)) {
         return decodedJwt; // Return decodedJwt if it's valid
@@ -26,7 +30,7 @@ export async function decodeAndVerifyJwtToken(token: string): Promise<ZodJwtType
     };
   
     // Generate the JWT token and sign it using the secret key
-    const token = jwt.sign(payload, 'SECRET_KEY', { expiresIn: '1h' }); // Token expires in 1 hour
+    const token = jwt.sign(payload, process.env.DOTENV || 'SECRET', { expiresIn: '1h' }); // Token expires in 1 hour
     return token;
   }
 

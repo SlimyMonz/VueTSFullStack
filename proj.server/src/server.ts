@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import { userRouter } from "./API/routes";
 import { authRouter } from "./Auth/route";
-import { createContext } from "./Auth/context";
+import { Context, createContext } from "./Auth/context";
 
 
 // Load environment variables from .env file earliest
@@ -16,7 +16,7 @@ dotenv.config();
 const port = process.env.SERVER_PORT || 3000;
 
 // Initialize tRPC
-const t = initTRPC.create();
+const t = initTRPC.context<Context>().create();
 // Merge routers
 const appRouter = t.router({
   user: userRouter,

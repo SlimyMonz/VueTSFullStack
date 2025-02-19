@@ -13,17 +13,17 @@ export async function createContext({ req, res }: trpcExpress.CreateExpressConte
       try {
         // Decode and verify the JWT token
         const decodedJwt = await decodeAndVerifyJwtToken(jwt);
+        console.log("JWT Decoded: " + decodedJwt);
         return decodedJwt; 
       } catch (error) {
         console.error('JWT verification failed', error);
         return null;
       }
     }
-    return null;  // Return null JWT if no JWT token is found, still want request/result for public procedure (auth). 
+    console.log("createContext.parseCookie(): No JWT found in cookie.")
+    return null; 
   }
-
-  const jwt = await parseCookie();  // Parse and verify the JWT token from cookies
-  console.log(jwt);
+  const jwt = await parseCookie();
   return { req, res, token: jwt }; 
 }
 

@@ -9,19 +9,22 @@ export const publicProcedure = t.procedure;
 export const privateProcedure = t.procedure.use(async function isAuthed(opts) {
   const { ctx } = opts;
 
-  // If ctx.jwt is valid/truthy, proceed to the next step
+  console.log("Private Procedure ctx.token: " + ctx.token);
+
+  // If context token is valid/truthy, proceed to the next step
   if (!!ctx.token) {
     return opts.next({
       ctx: {
         req: ctx.req,
         res: ctx.res,
+        token: ctx.token
       },
     });
-  }
+  } 
 
-  // Check if ctx.jwt is null or undefined and throw an unauthorized error
   throw new TRPCError({
     code: "UNAUTHORIZED",
-    message: "You must be logged in to access this resource",
+    message: "TRPC CTX: You must be logged in to access this resource",
   });
+
 });

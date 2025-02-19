@@ -4,13 +4,13 @@ import { privateProcedure, router } from "../trpc";
 import { UserData } from "../Models/zodTypes";
 
 
-const userList = privateProcedure
+const getList = privateProcedure
     .query(async () => {
         const users = await service.getManyUsers();
         return users;
 });
 
-const userById = privateProcedure
+const getById = privateProcedure
     .input(z.string())
     // .use(function) can be used for injecting middleware
     .query(async ({input}) => {
@@ -18,7 +18,7 @@ const userById = privateProcedure
         return user;
 });
 
-const user = privateProcedure
+const createOne = privateProcedure
 // example of where zodTypes models can be used
     .input(UserData)
     .mutation(async ({input}) => {
@@ -28,7 +28,7 @@ const user = privateProcedure
 
 // export the endpoints to be used in server.ts
 export const userRouter = router({
-  userList: userList,
-  userById: userById,
-  user: user,
+  getList: getList,
+  getById: getById,
+  createOne: createOne,
 });
