@@ -9,8 +9,6 @@ export const publicProcedure = t.procedure;
 export const privateProcedure = t.procedure.use(async function isAuthed(opts) {
   const { ctx } = opts;
 
-  console.log("Private Procedure ctx.token: " + ctx.token);
-
   // If context token is valid/truthy, proceed to the next step
   if (!!ctx.token) {
     return opts.next({

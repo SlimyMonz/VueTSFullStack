@@ -1,31 +1,24 @@
 import { decodeAndVerifyJwtToken } from './jwt';
 import * as trpcExpress from '@trpc/server/adapters/express';
+import Cookies from "cookies";
 
 // Function to create the context
 export async function createContext({ req, res }: trpcExpress.CreateExpressContextOptions) {
-
-  // Function to parse cookies and extract the JWT token
-  async function parseCookie() {
-    const cookies = req.cookies;  // Directly access cookies from req.cookies (thanks to cookie-parser)
-    const jwt = cookies.token;  // Get the JWT token from the cookie
-
-    if (!!jwt) {
+  const cookies = new Cookies(req, res);
+    const token = cookies.get("token");
+    if (!token) {
+      console.log("createContext(): No token found.");
+      return { req, res };
+    } else {
       try {
-        // Decode and verify the JWT token
-        const decodedJwt = await decodeAndVerifyJwtToken(jwt);
-        console.log("JWT Decoded: " + decodedJwt);
-        return decodedJwt; 
-      } catch (error) {
-        console.error('JWT verification failed', error);
-        return null;
+        const decodedJwt = await decodeAndVerifyJwtToken(token);
+        console.log('createContext(): JWT verification succeeded.');
+        return { req, res, token: decodedJwt};
+      } catch(error) {
+        console.error('createContext(): JWT verification failed', error);
+        return { req, res};
       }
     }
-    console.log("createContext.parseCookie(): No JWT found in cookie.")
-    return null; 
-  }
-  const jwt = await parseCookie();
-  return { req, res, token: jwt }; 
 }
-
 
 export type Context = Awaited<ReturnType<typeof createContext>>;
