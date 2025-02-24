@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 dotenv.config();
 
-export async function decodeAndVerifyJwtToken(token: string): Promise<ZodJwtType> {
+export async function decodeAndVerifyJsonWebToken(token: string): Promise<ZodJwtType> {
     try {
       // Verify and decode the JWT token using the secret key. (Secret should be loaded by DOTENV)
       const decodedJwt = jwt.verify(token, process.env.NODE_ENV || 'SECRET'); 
@@ -23,11 +23,7 @@ export async function decodeAndVerifyJwtToken(token: string): Promise<ZodJwtType
     }
   }
 
-  export function generateAndEncodeJwtToken(username: string): string {
-    // Create the payload for the JWT token
-    const payload: ZodJwtType = {
-      Username: username,
-    };
+  export function generateAndEncodeJwtToken(payload: ZodJwtType): string {
   
     // Generate the JWT token and sign it using the secret key
     const token = jwt.sign(payload, process.env.DOTENV || 'SECRET', { expiresIn: '1h' }); // Token expires in 1 hour

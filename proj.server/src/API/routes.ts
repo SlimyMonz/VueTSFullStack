@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { UserService as service } from "../Services/UserService";
-import { privateProcedure, router } from "../trpc";
+import { privateProcedure, router } from "../Auth/procedures";
 import { UserData } from "../Models/zodTypes";
 
 
